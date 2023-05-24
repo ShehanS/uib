@@ -40,6 +40,8 @@ public class User {
     @Column(name = "create_at")
     private Long createAt = new Date().getTime();
 
+    @Column(name = "created_project")
+    private boolean createdProject;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

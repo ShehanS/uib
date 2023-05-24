@@ -21,4 +21,5 @@ public class UserProjectDTO implements Serializable {
     private String workspaceFolderPath;
     private String projectFolderName;
     private String projectFolderPath;
+    private boolean createdProject;
 }

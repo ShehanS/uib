@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface IUser {
-    WorkspaceDTO createUser(User user) throws DatabaseSaveException, FoundException, SQLException, IsExistFolderException, CreateFolderException;
+    User createUser(User user) throws DatabaseSaveException, FoundException, SQLException, IsExistFolderException, CreateFolderException, NotFoundException;
+
+    User loginUser(User user) throws DatabaseSaveException, FoundException, SQLException, IsExistFolderException, CreateFolderException, NotFoundException;
 
     List<UserProjectDTO> getUserByEmail(String email) throws DatabaseSaveException, NotFoundException;
 }

@@ -33,7 +33,7 @@ public class UserController {
     public ResponseEntity<ResponseMessageDTO> addUser(@RequestBody User user) {
         ResponseMessageDTO responseMessageDTO = null;
         try {
-            WorkspaceDTO createdUser = userService.createUser(user);
+            User createdUser = userService.createUser(user);
             responseMessageDTO = new ResponseMessageDTO(createdUser, null, null, ResponseCode.USER_ADDED_SUCCESS);
         } catch (FoundException e) {
             responseMessageDTO = new ResponseMessageDTO(null, null, e.getMessage(), ResponseCode.ERROR);
@@ -43,6 +43,10 @@ public class UserController {
             responseMessageDTO = new ResponseMessageDTO(null, null, e.getMessage(), ResponseCode.ERROR);
         } catch (CreateFolderException e) {
             responseMessageDTO = new ResponseMessageDTO(null, null, e.getMessage(), ResponseCode.ERROR);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (DatabaseSaveException e) {
+            throw new RuntimeException(e);
         }
         return ResponseEntity.ok().body(responseMessageDTO);
     }

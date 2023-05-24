@@ -1,8 +1,6 @@
 package com.uib.api.controllers;
 
-import com.uib.api.dtos.CreateFolderDTO;
-import com.uib.api.dtos.ResponseMessageDTO;
-import com.uib.api.dtos.ProjectDTO;
+import com.uib.api.dtos.*;
 import com.uib.api.enums.ResponseCode;
 import com.uib.api.services.WorkspaceServices;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +26,33 @@ public class WorkspaceController {
             ProjectDTO projectDTO = workspaceServices.createProjectFolder(createFolderDTO);
             responseMessageDTO = new ResponseMessageDTO(projectDTO, null, null, ResponseCode.SUCCESS);
         } catch (Exception e) {
+            responseMessageDTO = new ResponseMessageDTO(null, e.getMessage(), null, ResponseCode.ERROR);
+        }
+        return ResponseEntity.ok().body(responseMessageDTO);
+    }
+
+    @PostMapping(path = "/treeView")
+    public ResponseEntity<ResponseMessageDTO> getTreeView(@RequestBody CreateFolderDTO createFolderDTO) {
+        ResponseMessageDTO responseMessageDTO = null;
+        try {
+            FolderTreeDTO folderTreeDTO = workspaceServices.getTreeView(createFolderDTO.path, createFolderDTO.getWorkspaceFolderName());
+            responseMessageDTO = new ResponseMessageDTO(folderTreeDTO, null, null, ResponseCode.SUCCESS);
+        } catch (Exception e) {
             responseMessageDTO = new ResponseMessageDTO(e.getMessage(), null, null, ResponseCode.ERROR);
         }
         return ResponseEntity.ok().body(responseMessageDTO);
     }
+
+    @PostMapping(path = "/createFlow")
+    public ResponseEntity<ResponseMessageDTO> createFlow(@RequestBody Flow flow) {
+        ResponseMessageDTO responseMessageDTO = null;
+        try {
+            responseMessageDTO = new ResponseMessageDTO(workspaceServices.createFlow(flow), null, null, ResponseCode.SUCCESS);
+        } catch (Exception e) {
+
+        }
+        return ResponseEntity.ok().body(responseMessageDTO);
+    }
+
 
 }

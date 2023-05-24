@@ -22,7 +22,7 @@ public class DirectoryService implements IFolder {
             StringBuilder path = new StringBuilder();
             String folderName = folderDTO.getFolderType() == FolderType.PROJECT_FOLDER ? folderDTO.getProjectFolderName() : folderDTO.getFolderName();
             String currentPath = folderDTO.getPath();
-            FolderDTO createdFolder = new FolderDTO();
+            FolderDTO folder = new FolderDTO();
             if (!Validator.isExistFolder(currentPath, folderName)) {
                 path.append(currentPath);
                 path.append("/");
@@ -33,10 +33,21 @@ public class DirectoryService implements IFolder {
                 if (!isCreated) {
                     throw new CreateFolderException("Cannot create folderDTO in the system!!!");
                 } else {
-                    createdFolder.setPath(file.getPath());
-                    createdFolder.setProjectFolderName(path.toString());
-                    createdFolder.setWorkspaceFolderName(currentPath);
-                    return createdFolder;
+                    StringBuilder xsdFolderPath = new StringBuilder();
+                    StringBuilder flowFolderPath = new StringBuilder();
+                    xsdFolderPath.append(file.getPath());
+                    xsdFolderPath.append("/");
+                    xsdFolderPath.append("XSD");
+                    File xsdFile = new File(xsdFolderPath.toString());
+                    boolean isCreatedXsd = xsdFile.mkdir();
+
+                    flowFolderPath.append(file.getPath());
+                    flowFolderPath.append("/");
+                    flowFolderPath.append("Flow");
+                    File flowFile = new File(flowFolderPath.toString());
+                    boolean isCreatedFlow = flowFile.mkdir();
+
+                    return folder;
                 }
             } else {
                 throw new IsExistFolderException("This name is already used!!!!");
@@ -54,7 +65,6 @@ public class DirectoryService implements IFolder {
             String currentPath = folderDTO.getPath();
             if (!Validator.isExistFolder(currentPath, folderName)) {
                 path.append(currentPath);
-                path.append("/");
                 path.append(folderName);
                 String newFolder = path.toString();
                 File file = new File(newFolder);

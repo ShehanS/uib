@@ -1,7 +1,6 @@
 package com.uib.api.services;
 
 import com.uib.api.dtos.FolderDTO;
-import com.uib.api.dtos.ProjectDTO;
 import com.uib.api.dtos.UserProjectDTO;
 import com.uib.api.dtos.WorkspaceDTO;
 import com.uib.api.entities.User;
@@ -10,7 +9,6 @@ import com.uib.api.enums.FolderType;
 import com.uib.api.exceptions.*;
 import com.uib.api.interfaces.IUser;
 import com.uib.api.querys.CustomUserRepository;
-import com.uib.api.repositories.UserProjectRepository;
 import com.uib.api.repositories.UserRepository;
 import com.uib.api.repositories.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,50 +25,55 @@ public class UserService implements IUser {
     private DirectoryService directoryService;
 
     private WorkspaceRepository workspaceRepository;
-    private UserProjectRepository userProjectRepository;
-
     private CustomUserRepository customUserRepository;
 
     @Value("${project.path}")
     private String path;
 
-    public UserService(UserRepository userRepository, DirectoryService directoryService, WorkspaceRepository workspaceRepository, UserProjectRepository userProjectRepository, CustomUserRepository customUserRepository) {
+    public UserService(UserRepository userRepository, DirectoryService directoryService, WorkspaceRepository workspaceRepository, CustomUserRepository customUserRepository) {
         this.userRepository = userRepository;
         this.directoryService = directoryService;
         this.workspaceRepository = workspaceRepository;
-        this.userProjectRepository = userProjectRepository;
         this.customUserRepository = customUserRepository;
     }
 
 
     @Override
     @Transactional
-    public WorkspaceDTO createUser(User user) throws FoundException, SQLException, IsExistFolderException, CreateFolderException {
-        if (!isExistUser(user)) {
-            StringBuilder sb = new StringBuilder();
-            Workspace workspace = new Workspace();
-            FolderDTO workspaceFolderDTO = new FolderDTO();
-            String[] emailUser = user.getEmail().split("@");
-            String workspaceNameFolder = user.getFirstName() + "_" + user.getLastName() + "_" + emailUser[0];
-            sb.append(path);
-            sb.append(workspaceNameFolder);
-            user.setWorkspacePath(path);
-            user.setWorkspaceFolderName(workspaceNameFolder);
-            workspaceFolderDTO.setWorkspaceFolderName(workspaceNameFolder);
-            workspaceFolderDTO.setFolderType(FolderType.WORKSPACE_FOLDER);
-            workspaceFolderDTO.setPath(path);
-            workspace.setWorkspaceFolderPath(sb.toString());
-            workspace.setWorkspaceFolderName(workspaceNameFolder);
-            User savedUser = userRepository.save(user);
-            Workspace savedWorkspace = workspaceRepository.save(workspace);
-            directoryService.createWorkspaceFolder(workspaceFolderDTO);
-            WorkspaceDTO workspaceDTO = new WorkspaceDTO();
-            workspaceDTO.setUser(user);
-            workspaceDTO.setWorkspace(savedWorkspace);
-            return workspaceDTO;
-        } else {
+    public User createUser(User user) throws FoundException, SQLException, IsExistFolderException, CreateFolderException, NotFoundException, DatabaseSaveException {
+
+        if (isExistUser(user)) {
             throw new FoundException("The email has already been registered!");
         }
+
+        StringBuilder sb = new StringBuilder();
+        Workspace workspace = new Workspace();
+        FolderDTO workspaceFolderDTO = new FolderDTO();
+        String[] emailUser = user.getEmail().split("@");
+        String workspaceNameFolder = user.getFirstName() + "_" + user.getLastName() + "_" + emailUser[0];
+        sb.append(path);
+        sb.append(workspaceNameFolder);
+        user.setWorkspacePath(path);
+        user.setWorkspaceFolderName(workspaceNameFolder);
+        workspaceFolderDTO.setWorkspaceFolderName(workspaceNameFolder);
+        workspaceFolderDTO.setFolderType(FolderType.WORKSPACE_FOLDER);
+        workspaceFolderDTO.setPath(path);
+        workspace.setWorkspaceFolderPath(sb.toString());
+        workspace.setWorkspaceFolderName(workspaceNameFolder);
+        User savedUser = userRepository.save(user);
+        Workspace savedWorkspace = workspaceRepository.save(workspace);
+        directoryService.createWorkspaceFolder(workspaceFolderDTO);
+        WorkspaceDTO workspaceDTO = new WorkspaceDTO();
+        workspaceDTO.setUser(user);
+        workspaceDTO.setWorkspace(savedWorkspace);
+        return savedUser;
+
+    }
+
+    @Override
+    public User loginUser(User logging) throws NotFoundException {
+        User user = userRepository.findByEmail(logging.getEmail()).orElseThrow(() -> new NotFoundException("User not found"));
+        return user;
     }
 
     @Transactional
