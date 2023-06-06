@@ -12,6 +12,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class Flow implements Serializable {
+    private String projectPath;
+    private String openPath;
     private String savePath;
     private String fileName;
     private String displayName;

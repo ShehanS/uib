@@ -10,10 +10,11 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class FolderTreeDTO {
+    private String type = "folder";
     private String id;
     private String name;
     private String path;
     private boolean root;
     private List<FolderTreeDTO> subFolders;
-    private List<String> files;
+    private List<FileDTO> files;
 }

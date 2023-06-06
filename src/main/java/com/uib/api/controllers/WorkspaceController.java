@@ -4,10 +4,7 @@ import com.uib.api.dtos.*;
 import com.uib.api.enums.ResponseCode;
 import com.uib.api.services.WorkspaceServices;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -47,7 +44,29 @@ public class WorkspaceController {
     public ResponseEntity<ResponseMessageDTO> createFlow(@RequestBody Flow flow) {
         ResponseMessageDTO responseMessageDTO = null;
         try {
-            responseMessageDTO = new ResponseMessageDTO(workspaceServices.createFlow(flow), null, null, ResponseCode.SUCCESS);
+            responseMessageDTO = new ResponseMessageDTO(workspaceServices.createFlow(flow), null, null, ResponseCode.FILE_CREATED_SUCCESS);
+        } catch (Exception e) {
+
+        }
+        return ResponseEntity.ok().body(responseMessageDTO);
+    }
+
+    @PostMapping(path = "/openFlow")
+    public ResponseEntity<ResponseMessageDTO> fileOpen(@RequestBody Flow flow) {
+        ResponseMessageDTO responseMessageDTO = null;
+        try {
+            responseMessageDTO = new ResponseMessageDTO(workspaceServices.openFlow(flow), null, null, ResponseCode.FILE_OPEN_SUCCESS);
+        } catch (Exception e) {
+
+        }
+        return ResponseEntity.ok().body(responseMessageDTO);
+    }
+
+    @PostMapping(path = "/updateFlow")
+    public ResponseEntity<ResponseMessageDTO> updateFlow(@RequestBody Flow flow) {
+        ResponseMessageDTO responseMessageDTO = null;
+        try {
+            responseMessageDTO = new ResponseMessageDTO(workspaceServices.updateFlow(flow), null, null, ResponseCode.FILE_CREATED_SUCCESS);
         } catch (Exception e) {
 
         }

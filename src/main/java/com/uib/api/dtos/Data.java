@@ -9,6 +9,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Data {
+    private String displayName;
     private String label;
     private String icon;
     private String description;

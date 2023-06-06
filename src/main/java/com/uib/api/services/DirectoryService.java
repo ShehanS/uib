@@ -16,6 +16,9 @@ public class DirectoryService implements IFolder {
     @Value("${project.path}")
     private String path;
 
+    @Value("${project.fileSystem}")
+    private String fileSystem;
+
     @Override
     public FolderDTO createFolder(FolderDTO folderDTO) throws CreateFolderException, IsExistFolderException {
         try {
@@ -33,19 +36,16 @@ public class DirectoryService implements IFolder {
                 if (!isCreated) {
                     throw new CreateFolderException("Cannot create folderDTO in the system!!!");
                 } else {
-                    StringBuilder xsdFolderPath = new StringBuilder();
-                    StringBuilder flowFolderPath = new StringBuilder();
-                    xsdFolderPath.append(file.getPath());
-                    xsdFolderPath.append("/");
-                    xsdFolderPath.append("XSD");
-                    File xsdFile = new File(xsdFolderPath.toString());
-                    boolean isCreatedXsd = xsdFile.mkdir();
+                    String[] folders = fileSystem.split(",");
+                    for (String f : folders) {
+                        StringBuilder fileSystemPath = new StringBuilder();
+                        fileSystemPath.append(file.getPath());
+                        fileSystemPath.append("/");
+                        fileSystemPath.append(f);
+                        File createdFolder = new File(fileSystemPath.toString());
+                        boolean isCreate = createdFolder.mkdir();
+                    }
 
-                    flowFolderPath.append(file.getPath());
-                    flowFolderPath.append("/");
-                    flowFolderPath.append("Flow");
-                    File flowFile = new File(flowFolderPath.toString());
-                    boolean isCreatedFlow = flowFile.mkdir();
 
                     return folder;
                 }

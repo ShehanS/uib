@@ -13,6 +13,7 @@ public class Node implements Serializable {
     private int width;
     private int height;
     private String id;
+    private String _id;
     private String type;
     private String name;
     private Position position;

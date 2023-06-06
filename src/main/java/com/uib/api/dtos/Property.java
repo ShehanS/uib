@@ -10,6 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Property implements Serializable {
+    private String tab;
     private String id;
     private String nodeId;
     private String name;
@@ -23,5 +24,8 @@ public class Property implements Serializable {
     private boolean nameAsValue;
     private Object secondaryValue;
     private boolean setToHeader;
+    private boolean bind;
+    private Object bindType;
+
 
 }

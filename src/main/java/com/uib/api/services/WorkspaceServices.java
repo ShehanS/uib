@@ -16,6 +16,8 @@ import com.uib.api.repositories.UserProjectRepository;
 import com.uib.api.repositories.UserRepository;
 import com.uib.api.repositories.WorkspaceRepository;
 import com.uib.api.utilits.Validator;
+import factory.IInputType;
+import factory.InputFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,19 +106,68 @@ public class WorkspaceServices implements IWorkspace {
     public Flow createFlow(Flow flow) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        Flow saveFlow = new Flow();
         try {
             StringBuilder filePath = new StringBuilder();
-            filePath.append(path);
             filePath.append(flow.getSavePath());
+            File projectPath = new File(flow.getSavePath());
+            String currentFolder = projectPath.getParent();
+            File projectFolder = new File(currentFolder);
             filePath.append("/");
             File directory = new File(filePath.toString());
-            File file = new File(directory, flow.getFileName()+".json");
+            File file = new File(directory, flow.getFileName() + ".json");
             objectMapper.writeValue(file, flow);
-            System.out.println("DTO object written to file successfully.");
+            saveFlow.setFileName(flow.getFileName());
+            saveFlow.setProjectPath(projectFolder.getPath());
+            saveFlow.setSavePath(file.getPath());
+            saveFlow.setDisplayName(flow.getDisplayName());
+            saveFlow.setDiagram(flow.getDiagram());
+            saveFlow.setImage(flow.getImage());
+            saveFlow.setValues(flow.getValues());
+            saveFlow.setOpenPath(flow.getOpenPath());
         } catch (IOException e) {
-            System.out.println("Error occurred while writing to file: " + e.getMessage());
+        }
+        return saveFlow;
+    }
+
+    @Override
+    public Flow updateFlow(Flow flow) throws NotFoundException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        try {
+            File file = new File(flow.getSavePath());
+            objectMapper.writeValue(file, flow);
+            List<Node> nodes = flow.getDiagram().getNodes();
+            for (Node node : nodes) {
+                List<Property> properties = node.getProperties();
+                for (Property property : properties) {
+                    InputFactory inputFactory = new InputFactory();
+                    IInputType input = inputFactory.extractInput(property.getType());
+                    System.out.println(input.extract(property));
+                }
+
+            }
+        } catch (IOException e) {
         }
         return flow;
+    }
+
+    @Override
+    public Flow openFlow(Flow flow) throws NotFoundException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Flow restoreFlow = null;
+        try {
+
+            File file = new File(flow.getOpenPath());
+            restoreFlow = objectMapper.readValue(file, Flow.class);
+            restoreFlow.setSavePath(file.getPath());
+            File flowFolder = new File(flow.getOpenPath());
+            File projectFolder = new File(flowFolder.getParent());
+            restoreFlow.setProjectPath(projectFolder.getParent());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return restoreFlow;
     }
 
 
@@ -130,13 +181,16 @@ public class WorkspaceServices implements IWorkspace {
         File[] files = folder.listFiles();
         if (files != null) {
             List<FolderTreeDTO> subFolders = new ArrayList<>();
-            List<String> filesList = new ArrayList<>();
+            List<FileDTO> filesList = new ArrayList<>();
 
             for (File file : files) {
                 if (file.isDirectory()) {
                     buildFolderTree(file, subFolders);
                 } else {
-                    filesList.add(file.getName());
+                    FileDTO f = new FileDTO();
+                    f.setFileName(file.getName());
+                    f.setFilePath(file.getPath());
+                    filesList.add(f);
                 }
             }
 
