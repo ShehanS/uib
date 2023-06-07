@@ -9,6 +9,9 @@ import com.uib.api.exceptions.FoundException;
 import com.uib.api.exceptions.IsExistFolderException;
 import com.uib.api.exceptions.NotFoundException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 public interface IWorkspace {
   ProjectDTO createProjectFolder(CreateFolderDTO folder) throws FoundException, NotFoundException, IsExistFolderException, CreateFolderException;
 
@@ -16,8 +19,9 @@ public interface IWorkspace {
 
   Flow createFlow(Flow flow);
 
-  Flow updateFlow(Flow flow) throws  NotFoundException;
+  Flow updateFlow(Flow flow) throws NotFoundException, ParserConfigurationException, TransformerException;
 
   Flow openFlow(Flow flow) throws  NotFoundException;
+
 
 }

@@ -1,6 +1,7 @@
 package factory;
 
 import com.uib.api.inputComponents.*;
+import com.uib.api.interfaces.IInputType;
 
 
 public class InputFactory {

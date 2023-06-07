@@ -2,7 +2,7 @@ package com.uib.api.inputComponents;
 
 import com.uib.api.dtos.Property;
 import com.uib.api.dtos.returnDTOs.DropDown.DropDownDTO;
-import factory.IInputType;
+import com.uib.api.interfaces.IInputType;
 
 public class DropDownComponent implements IInputType {
     @Override

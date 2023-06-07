@@ -3,9 +3,11 @@ package com.uib.api.inputComponents;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.uib.api.dtos.Property;
 import com.uib.api.dtos.returnDTOs.InputParserSetting.InputParserSettingDTO;
-import factory.IInputType;
+import com.uib.api.interfaces.IInputType;
 
 import java.io.IOException;
 

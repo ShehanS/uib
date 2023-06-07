@@ -7,7 +7,7 @@ import com.uib.api.dtos.Property;
 import com.uib.api.dtos.inputDTOs.TableFill.TableFillDTO;
 import com.uib.api.dtos.inputDTOs.TableFill.ValueDTO;
 import com.uib.api.dtos.returnDTOs.TableFill.TableAttribute;
-import factory.IInputType;
+import com.uib.api.interfaces.IInputType;
 
 import java.util.ArrayList;
 import java.util.List;

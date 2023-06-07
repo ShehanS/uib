@@ -16,12 +16,14 @@ import com.uib.api.repositories.UserProjectRepository;
 import com.uib.api.repositories.UserRepository;
 import com.uib.api.repositories.WorkspaceRepository;
 import com.uib.api.utilits.Validator;
-import factory.IInputType;
+import com.uib.api.interfaces.IInputType;
 import factory.InputFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,15 +39,18 @@ public class WorkspaceServices implements IWorkspace {
     private DirectoryService directoryService;
 
     private UserRepository userRepository;
+    private XMLGenerateService xmlGenerateService;
+
 
     @Value("${project.path}")
     private String path;
 
-    public WorkspaceServices(WorkspaceRepository workspaceRepository, UserProjectRepository userProjectRepository, UserRepository userRepository, DirectoryService directoryService) {
+    public WorkspaceServices(XMLGenerateService xmlGenerateService, WorkspaceRepository workspaceRepository, UserProjectRepository userProjectRepository, UserRepository userRepository, DirectoryService directoryService) {
         this.workspaceRepository = workspaceRepository;
         this.userProjectRepository = userProjectRepository;
         this.userRepository = userRepository;
         this.directoryService = directoryService;
+        this.xmlGenerateService = xmlGenerateService;
     }
 
     @Transactional
@@ -137,15 +142,12 @@ public class WorkspaceServices implements IWorkspace {
         try {
             File file = new File(flow.getSavePath());
             objectMapper.writeValue(file, flow);
-            List<Node> nodes = flow.getDiagram().getNodes();
-            for (Node node : nodes) {
-                List<Property> properties = node.getProperties();
-                for (Property property : properties) {
-                    InputFactory inputFactory = new InputFactory();
-                    IInputType input = inputFactory.extractInput(property.getType());
-                    System.out.println(input.extract(property));
-                }
-
+            try {
+                xmlGenerateService.generate(flow);
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (TransformerException e) {
+                e.printStackTrace();
             }
         } catch (IOException e) {
         }
@@ -169,7 +171,6 @@ public class WorkspaceServices implements IWorkspace {
         }
         return restoreFlow;
     }
-
 
     private static void buildFolderTree(File folder, List<FolderTreeDTO> folderTreeDTOList) {
         FolderTreeDTO folderTreeDTO = new FolderTreeDTO();
