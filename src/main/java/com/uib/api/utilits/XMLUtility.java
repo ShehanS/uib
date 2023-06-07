@@ -66,6 +66,17 @@ public class XMLUtility {
 
     public static final String GROOVY_SCRIPT = "GroovyScript";
 
+    public static final String CONNECTION = "Connection";
+
+    public static final String SOURCE_NODE = "sourceNode";
+
+    public static final String TARGET_NODE = "targetNode";
+
+    public static final String SOURCE_TERMINAL = "sourceTerminal";
+
+    public static final String TARGET_TERMINAL = "targetTerminal";
+
+
     public static Element createElement(Document doc, String element) {
         Element el = doc.createElement(element);
         return el;

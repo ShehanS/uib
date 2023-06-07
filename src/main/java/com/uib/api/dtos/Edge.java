@@ -10,9 +10,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Edge implements Serializable {
+    private String id;
+    private String type;
     private String source;
     private String sourceHandle;
     private String target;
     private String targetHandle;
-    private String id;
+    private boolean animated;
 }
