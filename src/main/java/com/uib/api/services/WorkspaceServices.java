@@ -7,17 +7,12 @@ import com.uib.api.entities.User;
 import com.uib.api.entities.UserProject;
 import com.uib.api.entities.Workspace;
 import com.uib.api.enums.FolderType;
-import com.uib.api.exceptions.CreateFolderException;
-import com.uib.api.exceptions.FoundException;
-import com.uib.api.exceptions.IsExistFolderException;
-import com.uib.api.exceptions.NotFoundException;
+import com.uib.api.exceptions.*;
 import com.uib.api.interfaces.IWorkspace;
 import com.uib.api.repositories.UserProjectRepository;
 import com.uib.api.repositories.UserRepository;
 import com.uib.api.repositories.WorkspaceRepository;
 import com.uib.api.utilits.Validator;
-import com.uib.api.interfaces.IInputType;
-import factory.InputFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,6 +142,8 @@ public class WorkspaceServices implements IWorkspace {
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (TransformerException e) {
+                e.printStackTrace();
+            } catch (FieldHasNull e) {
                 e.printStackTrace();
             }
         } catch (IOException e) {

@@ -1,12 +1,14 @@
 package com.uib.api.utilits;
 
 
+import com.uib.api.exceptions.FieldHasNull;
+import com.uib.api.interfaces.IXMLUtility;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class XMLUtility {
+public class XMLUtility implements IXMLUtility {
 
     public final static String MESSAGE_FLOW_NODE = "MessageFlow";
     public final static String MESSAGE_FLOW_UUID_ATT = "uuid";
@@ -77,20 +79,32 @@ public class XMLUtility {
     public static final String TARGET_TERMINAL = "targetTerminal";
 
 
-    public static Element createElement(Document doc, String element) {
-        Element el = doc.createElement(element);
-        return el;
+    public Element createElement(Document doc, String element) throws FieldHasNull {
+        if (element != null) {
+            Element el = doc.createElement(element);
+            return el;
+        } else {
+            throw new FieldHasNull("Cannot empty required field");
+        }
     }
 
-    public static Attr createAttribute(Element element, Document doc, String name, String value) {
-        Attr attr = doc.createAttribute(name);
-        attr.setValue(value);
-        return attr;
+    public Attr createAttribute(Element element, Document doc, String name, String value) throws FieldHasNull {
+        if (value != null) {
+            Attr attr = doc.createAttribute(name);
+            attr.setValue(value);
+            return attr;
+        } else {
+            throw new FieldHasNull("Cannot empty required field");
+        }
     }
 
-    public static Node createTextNode(Element element, Document doc, String name) {
-        Node textNode = element.appendChild(doc.createTextNode(name));
-        return textNode;
+    public Node createTextNode(Element element, Document doc, String name) throws FieldHasNull {
+        if (name != null) {
+            Node textNode = element.appendChild(doc.createTextNode(name));
+            return textNode;
+        } else {
+            throw new FieldHasNull("Cannot empty required field");
+        }
     }
 
 }

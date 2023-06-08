@@ -16,7 +16,7 @@ public class Data {
     private String description;
     private String id;
     private ArrayList<Object> properties;
-    private List<NodeType> nodeTypes;
+    private List<Object> nodeTypes;
     private String nodeType;
     private String uuid;
     private String implementer;

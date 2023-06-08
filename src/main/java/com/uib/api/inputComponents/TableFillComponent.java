@@ -7,6 +7,7 @@ import com.uib.api.dtos.Property;
 import com.uib.api.dtos.inputDTOs.TableFill.TableFillDTO;
 import com.uib.api.dtos.inputDTOs.TableFill.ValueDTO;
 import com.uib.api.dtos.returnDTOs.TableFill.TableAttribute;
+import com.uib.api.dtos.returnDTOs.TableFill.TableData;
 import com.uib.api.interfaces.IInputType;
 
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ import java.util.List;
 public class TableFillComponent implements IInputType {
     @Override
     public com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO extract(Property property) {
-        com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO tableData = new com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO();
+        TableData tableData = new TableData();
+        com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO tableFillDTO = new com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO();
         try {
             List<TableAttribute> tableAttributeList = new ArrayList<>();
             ObjectWriter owNodeTypes = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -31,9 +33,10 @@ public class TableFillComponent implements IInputType {
                 tableAttributeList.add(tableAttribute);
             }
             tableData.setAttributeList(tableAttributeList);
+            tableFillDTO.setTableData(tableData);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return tableData;
+        return tableFillDTO;
     }
 }

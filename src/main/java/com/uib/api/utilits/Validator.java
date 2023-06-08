@@ -1,5 +1,7 @@
 package com.uib.api.utilits;
 
+import com.uib.api.dtos.Node;
+
 import java.io.File;
 
 public abstract class Validator {
@@ -11,6 +13,10 @@ public abstract class Validator {
             }
         }
         return false;
+    }
+
+    public static boolean validateRequiredField(Node node){
+        return true;
     }
 
 }

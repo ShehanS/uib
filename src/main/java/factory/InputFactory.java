@@ -22,6 +22,12 @@ public class InputFactory {
         if (type.equalsIgnoreCase("dropDown")) {
             return new DropDownComponent();
         }
+        if (type.equalsIgnoreCase("mappingTable")) {
+            return new MappingTableComponent();
+        }
+        if (type.equalsIgnoreCase("outputParserSetting")) {
+            return new OutputParserSettingComponent();
+        }
         return new DefaultComponent();
     }
 }

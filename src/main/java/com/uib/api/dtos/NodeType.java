@@ -14,6 +14,7 @@ public class NodeType {
     private String terminal;
     private String toolTip;
     private String target;
+    private String type;
     private int x;
     private int y;
 
