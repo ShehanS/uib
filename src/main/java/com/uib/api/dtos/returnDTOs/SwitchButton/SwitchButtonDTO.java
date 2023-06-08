@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SwitchButtonDTO {
     private String name;
-    private boolean value;
+    private String value;
 }

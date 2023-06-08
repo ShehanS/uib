@@ -9,7 +9,9 @@ public class SwitchButtonComponent implements IInputType {
     public SwitchButtonDTO extract(Property property) {
         SwitchButtonDTO switchButtonDTO = new SwitchButtonDTO();
         switchButtonDTO.setName(property.getIdentity());
-        switchButtonDTO.setValue(Boolean.parseBoolean(property.getDefaultValue().toString()));
+        if (property.getDefaultValue() != null) {
+            switchButtonDTO.setValue(property.getDefaultValue().toString());
+        }
 
         return switchButtonDTO;
     }

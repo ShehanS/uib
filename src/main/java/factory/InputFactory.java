@@ -28,6 +28,9 @@ public class InputFactory {
         if (type.equalsIgnoreCase("outputParserSetting")) {
             return new OutputParserSettingComponent();
         }
+        if (type.equalsIgnoreCase("groovyEditor")) {
+            return new GroovyEditorComponent();
+        }
         return new DefaultComponent();
     }
 }

@@ -7,10 +7,12 @@ import com.uib.api.dtos.*;
 import com.uib.api.dtos.returnDTOs.CheckBox.CheckBoxDTO;
 import com.uib.api.dtos.returnDTOs.DropDown.DropDownDTO;
 import com.uib.api.dtos.returnDTOs.Edge.EdgeDTO;
+import com.uib.api.dtos.returnDTOs.GroovyEditor.GroovyEditorDTO;
 import com.uib.api.dtos.returnDTOs.InputParserSetting.InputParserSettingDTO;
 import com.uib.api.dtos.returnDTOs.MappingTable.MapAttribute;
 import com.uib.api.dtos.returnDTOs.MappingTable.MappingTableDTO;
 import com.uib.api.dtos.returnDTOs.OutputParserSetting.OutputParserSettingsDTO;
+import com.uib.api.dtos.returnDTOs.SwitchButton.SwitchButtonDTO;
 import com.uib.api.dtos.returnDTOs.TableFill.TableAttribute;
 import com.uib.api.dtos.returnDTOs.TableFill.TableFillDTO;
 import com.uib.api.dtos.returnDTOs.TextFiled.TextFieldDTO;
@@ -71,7 +73,7 @@ public class XMLGenerateService implements IXMLGenerateService {
         generatedPath.append("/Generated Flows/");
         fileName.append(generatedPath);
         fileName.append(flow.getFileName());
-        fileName.append(".xml");
+        fileName.append(".mfl");
         System.out.println(fileName.toString());
         try {
             Element rootElement = xmlUtility.createElement(doc, xmlUtility.MESSAGE_FLOW_NODE);
@@ -243,6 +245,25 @@ public class XMLGenerateService implements IXMLGenerateService {
                                 checkBoxproperty.setAttributeNode(name);
                                 checkBoxproperty.setAttributeNode(value);
                                 nodeElement.appendChild(checkBoxproperty);
+                            }
+
+                            if (attribute.getClass() == SwitchButtonDTO.class) {
+                                SwitchButtonDTO switchButtonDTO = (SwitchButtonDTO) attribute;
+                                Element checkBoxproperty = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
+                                Attr name = xmlUtility.createAttribute(checkBoxproperty, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, switchButtonDTO.getName());
+                                Attr value = xmlUtility.createAttribute(checkBoxproperty, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, switchButtonDTO.getValue());
+                                checkBoxproperty.setAttributeNode(name);
+                                checkBoxproperty.setAttributeNode(value);
+                                nodeElement.appendChild(checkBoxproperty);
+                            }
+
+                            if (attribute.getClass() == GroovyEditorDTO.class) {
+                                GroovyEditorDTO groovyEditorDTO = (GroovyEditorDTO) attribute;
+                                Element groovyCodeBlock = xmlUtility.createElement(doc, XMLUtility.GROOVY_SCRIPT);
+                                org.w3c.dom.Node code = xmlUtility.createTextNode(groovyCodeBlock, doc, groovyEditorDTO.getScriptBlock());
+                                groovyCodeBlock.appendChild(code);
+                                nodeElement.appendChild(groovyCodeBlock);
+
                             }
 
                         }
