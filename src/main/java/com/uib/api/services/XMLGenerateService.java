@@ -101,7 +101,7 @@ public class XMLGenerateService implements IXMLGenerateService {
             if (nodes.size() > 0) {
                 for (Node node : nodes) {
                     Element nodeElement = xmlUtility.createElement(doc, xmlUtility.NODE);
-                    Attr uuid = xmlUtility.createAttribute(nodeElement, doc, xmlUtility.NODE_UUID_ATT, node.getData().getId());
+                    Attr uuid = xmlUtility.createAttribute(nodeElement, doc, xmlUtility.NODE_UUID_ATT, node.getData().getUuid());
                     Attr implementer = xmlUtility.createAttribute(nodeElement, doc, xmlUtility.NODE_IMPLEMENTER, node.getData().getImplementer());
                     Attr type = xmlUtility.createAttribute(nodeElement, doc, xmlUtility.NODE_TYPE_ATT, node.getData().getNodeType());
                     nodeElement.setAttributeNode(uuid);
