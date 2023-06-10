@@ -9,6 +9,9 @@ public class TextFieldComponent implements IInputType {
     public TextFieldDTO extract(Property property) {
         TextFieldDTO textFieldDTO = new TextFieldDTO();
         textFieldDTO.setName(property.getIdentity());
+        if (property.getValue() != null) {
+            textFieldDTO.setAdditionalAttribute(property.getValue().toString());
+        }
         if (property.getDefaultValue() != null) {
             textFieldDTO.setValue(property.getDefaultValue().toString());
         }

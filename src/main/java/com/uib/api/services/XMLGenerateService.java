@@ -24,6 +24,7 @@ import com.uib.api.utilits.XMLUtility;
 import factory.InputFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -48,6 +49,14 @@ public class XMLGenerateService implements IXMLGenerateService {
     private MappingService mappingService;
     private InputFactory inputFactory = null;
 
+    @Value("${edge.input.terminal}")
+    private String[] inputTerminalAttrs;
+
+    @Value("${edge.output.terminal}")
+    private String[] outputTerminalAttrs;
+
+    @Value("${node.attrs}")
+    private String[] configEl;
 
     public XMLGenerateService(MappingService mappingService) {
         this.mappingService = mappingService;
@@ -64,6 +73,7 @@ public class XMLGenerateService implements IXMLGenerateService {
         builder = factory.newDocumentBuilder();
         Document doc = builder.newDocument();
         inputFactory = new InputFactory();
+        boolean foundFlag = false;
         StringBuilder fileName = new StringBuilder();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectWriter objectWriter = null;
@@ -74,7 +84,6 @@ public class XMLGenerateService implements IXMLGenerateService {
         fileName.append(generatedPath);
         fileName.append(flow.getFileName());
         fileName.append(".mfl");
-        System.out.println(fileName.toString());
         try {
             Element rootElement = xmlUtility.createElement(doc, xmlUtility.MESSAGE_FLOW_NODE);
             Attr rootUUID = xmlUtility.createAttribute(rootElement, doc, xmlUtility.MESSAGE_FLOW_UUID_ATT, flow.getFileName());
@@ -114,26 +123,80 @@ public class XMLGenerateService implements IXMLGenerateService {
 
                                 if (nodeType.getTerminal().equals("in")) {
                                     Attr id = xmlUtility.createAttribute(inputTerminal, doc, xmlUtility.INPUT_TERMINAL_NAME_ATTR, nodeType.getTerminal());
+                                    if (node.getProperties().size() > 0) {
+                                        for (Property property : node.getProperties()) {
+                                            for (String attr : inputTerminalAttrs) {
+                                                if (property.getIdentity().equals(attr) && (property.getDefaultValue().toString() != null)) {
+                                                    Attr at = xmlUtility.createAttribute(inputTerminal, doc, attr, property.getDefaultValue().toString());
+                                                    inputTerminal.setAttributeNode(at);
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     inputTerminal.setAttributeNode(id);
                                     nodeElement.appendChild(inputTerminal);
+
                                 }
                                 if (nodeType.getTerminal().equals("out")) {
                                     Attr id = xmlUtility.createAttribute(outTerminal, doc, xmlUtility.OUTPUT_TERMINAL_NAME_ATTR, nodeType.getTerminal());
+                                    if (node.getProperties().size() > 0) {
+                                        for (Property property : node.getProperties()) {
+                                            for (String attr : outputTerminalAttrs) {
+                                                if (property.getIdentity().equals(attr) && (property.getDefaultValue().toString() != null)) {
+                                                    Attr at = xmlUtility.createAttribute(outTerminal, doc, attr, property.getDefaultValue().toString());
+                                                    outTerminal.setAttributeNode(at);
+                                                }
+                                            }
+                                        }
+                                    }
                                     outTerminal.setAttributeNode(id);
                                     nodeElement.appendChild(outTerminal);
+
                                 }
                                 if (nodeType.getTerminal().equals("catch")) {
                                     Attr id = xmlUtility.createAttribute(outTerminal, doc, xmlUtility.OUTPUT_TERMINAL_NAME_ATTR, nodeType.getTerminal());
+                                    if (node.getProperties().size() > 0) {
+                                        for (Property property : node.getProperties()) {
+                                            for (String attr : outputTerminalAttrs) {
+                                                if (property.getIdentity().equals(attr) && (property.getDefaultValue().toString() != null)) {
+                                                    Attr at = xmlUtility.createAttribute(outTerminal, doc, attr, property.getDefaultValue().toString());
+                                                    outTerminal.setAttributeNode(at);
+                                                }
+                                            }
+                                        }
+                                    }
                                     outTerminal.setAttributeNode(id);
                                     nodeElement.appendChild(outTerminal);
+
                                 }
                                 if (nodeType.getTerminal().equals("error")) {
                                     Attr id = xmlUtility.createAttribute(outTerminal, doc, xmlUtility.OUTPUT_TERMINAL_NAME_ATTR, nodeType.getTerminal());
+                                    if (node.getProperties().size() > 0) {
+                                        for (Property property : node.getProperties()) {
+                                            for (String attr : outputTerminalAttrs) {
+                                                if (property.getIdentity().equals(attr) && (property.getDefaultValue().toString() != null)) {
+                                                    Attr at = xmlUtility.createAttribute(outTerminal, doc, attr, property.getDefaultValue().toString());
+                                                    outTerminal.setAttributeNode(at);
+                                                }
+                                            }
+                                        }
+                                    }
                                     outTerminal.setAttributeNode(id);
                                     nodeElement.appendChild(outTerminal);
                                 }
                                 if (nodeType.getTerminal().equals("failure")) {
                                     Attr id = xmlUtility.createAttribute(outTerminal, doc, xmlUtility.OUTPUT_TERMINAL_NAME_ATTR, nodeType.getTerminal());
+                                    if (node.getProperties().size() > 0) {
+                                        for (Property property : node.getProperties()) {
+                                            for (String attr : outputTerminalAttrs) {
+                                                if (property.getIdentity().equals(attr) && (property.getDefaultValue().toString() != null)) {
+                                                    Attr at = xmlUtility.createAttribute(outTerminal, doc, attr, property.getDefaultValue().toString());
+                                                    outTerminal.setAttributeNode(at);
+                                                }
+                                            }
+                                        }
+                                    }
                                     outTerminal.setAttributeNode(id);
                                     nodeElement.appendChild(outTerminal);
                                 }
@@ -142,18 +205,30 @@ public class XMLGenerateService implements IXMLGenerateService {
                         }
 
                         for (Property property : properties) {
-
                             IInputType extractor = inputFactory.extractInput(property.getType());
                             Object attribute = mappingService.inputComponentToXMLAttribute(extractor.extract(property));
 
                             if (attribute.getClass() == TextFieldDTO.class) {
                                 TextFieldDTO textFieldDTO = (TextFieldDTO) attribute;
-                                Element propertyElement = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
-                                Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, textFieldDTO.getName());
-                                Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, textFieldDTO.getValue());
-                                propertyElement.setAttributeNode(name);
-                                propertyElement.setAttributeNode(value);
-                                nodeElement.appendChild(propertyElement);
+                                String propertyFlag = "";
+                                for (String el : configEl) {
+                                    if (el.equals(textFieldDTO.getName())) {
+                                        Element additionalEl = xmlUtility.createElement(doc, textFieldDTO.getAdditionalAttribute());
+                                        additionalEl.appendChild(xmlUtility.createTextNode(additionalEl, doc, textFieldDTO.getValue()));
+                                        nodeElement.appendChild(additionalEl);
+                                        propertyFlag = textFieldDTO.getName();
+                                        break;
+                                    }
+
+                                }
+                                if(!propertyFlag.equals(textFieldDTO.getName())) {
+                                    Element propertyEl = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
+                                    Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, textFieldDTO.getName());
+                                    Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, textFieldDTO.getValue());
+                                    propertyEl.setAttributeNode(name);
+                                    propertyEl.setAttributeNode(value);
+                                    nodeElement.appendChild(propertyEl);
+                                }
 
                             }
 
@@ -161,60 +236,68 @@ public class XMLGenerateService implements IXMLGenerateService {
                                 InputParserSettingDTO inputParserSettingDTO = (InputParserSettingDTO) attribute;
                                 Element inputParserSettingsElement = xmlUtility.createElement(doc, xmlUtility.NODE_INPUT_PARSER_SETTINGS);
                                 Element inputParserName = xmlUtility.createElement(doc, xmlUtility.NODE_INPUT_PARSER_NAME);
-                                inputParserName.appendChild(xmlUtility.createTextNode(inputParserSettingsElement, doc, inputParserSettingDTO.getInputParserSettings().getParserName()));
-                                inputParserSettingsElement.appendChild(inputParserName);
-
-                                if (inputParserSettingDTO.getInputParserSettings().getProperty().size() > 0) {
-                                    for (com.uib.api.dtos.returnDTOs.InputParserSetting.Property parserProperty : inputParserSettingDTO.getInputParserSettings().getProperty()) {
-                                        Element propertyElement = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
-                                        Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, parserProperty.getName());
-                                        Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, parserProperty.getValue());
-                                        propertyElement.setAttributeNode(name);
-                                        propertyElement.setAttributeNode(value);
-                                        inputParserSettingsElement.appendChild(propertyElement);
-                                    }
-                                    Element hadlingProperties = xmlUtility.createElement(doc, xmlUtility.NODE_HANDLING_PROPERTIES);
-                                    Element handlingProperty = xmlUtility.createElement(doc, xmlUtility.NODE_HANDLING_PROPERTY);
-                                    Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, inputParserSettingDTO.getInputParserSettings().getHadlingProperties().getHandlingProperty().getName());
-                                    Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, inputParserSettingDTO.getInputParserSettings().getHadlingProperties().getHandlingProperty().getValue());
-                                    handlingProperty.setAttributeNode(name);
-                                    handlingProperty.setAttributeNode(value);
-                                    hadlingProperties.appendChild(handlingProperty);
-                                    inputParserSettingsElement.appendChild(hadlingProperties);
-
+                                if (inputParserSettingDTO.getInputParserSettings() != null) {
+                                    inputParserName.appendChild(xmlUtility.createTextNode(inputParserSettingsElement, doc, inputParserSettingDTO.getInputParserSettings().getParserName()));
+                                    inputParserSettingsElement.appendChild(inputParserName);
                                 }
-                                nodeElement.appendChild(inputParserSettingsElement);
+
+                                if (inputParserSettingDTO.getInputParserSettings() != null) {
+                                    if (inputParserSettingDTO.getInputParserSettings().getProperty().size() > 0) {
+                                        for (com.uib.api.dtos.returnDTOs.InputParserSetting.Property parserProperty : inputParserSettingDTO.getInputParserSettings().getProperty()) {
+                                            Element propertyElement = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
+                                            Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, parserProperty.getName());
+                                            Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, parserProperty.getValue());
+                                            propertyElement.setAttributeNode(name);
+                                            propertyElement.setAttributeNode(value);
+                                            inputParserSettingsElement.appendChild(propertyElement);
+                                        }
+                                        Element hadlingProperties = xmlUtility.createElement(doc, xmlUtility.NODE_HANDLING_PROPERTIES);
+                                        Element handlingProperty = xmlUtility.createElement(doc, xmlUtility.NODE_HANDLING_PROPERTY);
+                                        Attr name = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, inputParserSettingDTO.getInputParserSettings().getHadlingProperties().getHandlingProperty().getName());
+                                        Attr value = xmlUtility.createAttribute(rootElement, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, inputParserSettingDTO.getInputParserSettings().getHadlingProperties().getHandlingProperty().getValue());
+                                        handlingProperty.setAttributeNode(name);
+                                        handlingProperty.setAttributeNode(value);
+                                        hadlingProperties.appendChild(handlingProperty);
+                                        inputParserSettingsElement.appendChild(hadlingProperties);
+
+                                    }
+                                    nodeElement.appendChild(inputParserSettingsElement);
+                                }
                             }
 
                             if (attribute.getClass() == MappingTableDTO.class) {
                                 MappingTableDTO mappingTableDTO = (MappingTableDTO) attribute;
                                 List<MapAttribute> mapAttributeList = mappingTableDTO.getMapAttributes();
-                                Element map = xmlUtility.createElement(doc, xmlUtility.MAPPING_NODE_MAP);
-                                for (MapAttribute mapAttribute : mapAttributeList) {
-                                    Element execute = xmlUtility.createElement(doc, xmlUtility.EXECUTE);
-                                    Attr operator = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_OPERATOR_ATT, mapAttribute.getOperator());
-                                    Attr from = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_FROM_ATT, mapAttribute.getFrom());
-                                    Attr to = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_TO_ATT, mapAttribute.getTo());
-                                    Attr value = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_VALUE_ATT, mapAttribute.getValue());
-                                    Attr typeE = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_TYPE_ATT, mapAttribute.getType());
-                                    execute.setAttributeNode(operator);
-                                    execute.setAttributeNode(from);
-                                    execute.setAttributeNode(to);
-                                    execute.setAttributeNode(value);
-                                    execute.setAttributeNode(typeE);
-                                    map.appendChild(execute);
+                                if (mapAttributeList.size() > 0) {
+                                    Element map = xmlUtility.createElement(doc, xmlUtility.MAPPING_NODE_MAP);
+                                    for (MapAttribute mapAttribute : mapAttributeList) {
+                                        Element execute = xmlUtility.createElement(doc, xmlUtility.EXECUTE);
+                                        Attr operator = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_OPERATOR_ATT, mapAttribute.getOperator());
+                                        Attr from = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_FROM_ATT, mapAttribute.getFrom());
+                                        Attr to = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_TO_ATT, mapAttribute.getTo());
+                                        Attr value = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_VALUE_ATT, mapAttribute.getValue());
+                                        Attr typeE = xmlUtility.createAttribute(execute, doc, xmlUtility.EXECUTE_TYPE_ATT, mapAttribute.getType());
+                                        execute.setAttributeNode(operator);
+                                        execute.setAttributeNode(from);
+                                        execute.setAttributeNode(to);
+                                        execute.setAttributeNode(value);
+                                        execute.setAttributeNode(typeE);
+                                        map.appendChild(execute);
+                                    }
+                                    nodeElement.appendChild(map);
                                 }
-                                nodeElement.appendChild(map);
                             }
 
                             if (attribute.getClass() == OutputParserSettingsDTO.class) {
                                 OutputParserSettingsDTO outputParserSettingsDTO = (OutputParserSettingsDTO) attribute;
                                 Element outputParserSettings = xmlUtility.createElement(doc, xmlUtility.NODE_OUTPUT_PARSER_SETTINGS);
                                 Element parserNameEl = xmlUtility.createElement(doc, xmlUtility.NODE_OUTPUT_PARSER_NAME);
-                                org.w3c.dom.Node parserName = xmlUtility.createTextNode(parserNameEl, doc, outputParserSettingsDTO.getParserName());
-                                parserNameEl.appendChild(parserName);
-                                outputParserSettings.appendChild(parserNameEl);
-                                nodeElement.appendChild(outputParserSettings);
+                                if (!outputParserSettingsDTO.getParserName().equals("")) {
+                                    org.w3c.dom.Node parserName = xmlUtility.createTextNode(parserNameEl, doc, outputParserSettingsDTO.getParserName());
+                                    parserNameEl.appendChild(parserName);
+                                    outputParserSettings.appendChild(parserNameEl);
+                                    nodeElement.appendChild(outputParserSettings);
+                                }
                             }
 
                             if (attribute.getClass() == TableFillDTO.class) {
@@ -222,7 +305,6 @@ public class XMLGenerateService implements IXMLGenerateService {
                                 List<TableAttribute> tableAttributeList = tableFillDTO.getTableData().getAttributeList();
                                 if (tableAttributeList.size() > 0) {
                                     for (TableAttribute tableAttribute : tableAttributeList) {
-                                        System.out.println(tableAttribute.toString());
                                     }
                                 }
                             }
@@ -230,11 +312,13 @@ public class XMLGenerateService implements IXMLGenerateService {
                             if (attribute.getClass() == DropDownDTO.class) {
                                 DropDownDTO dropDownDTO = (DropDownDTO) attribute;
                                 Element dropDownproperty = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
-                                Attr name = xmlUtility.createAttribute(dropDownproperty, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, dropDownDTO.getName());
-                                Attr value = xmlUtility.createAttribute(dropDownproperty, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, dropDownDTO.getValue());
-                                dropDownproperty.setAttributeNode(name);
-                                dropDownproperty.setAttributeNode(value);
-                                nodeElement.appendChild(dropDownproperty);
+                                if ((dropDownDTO.getName() != null) && (dropDownDTO.getValue() != null)) {
+                                    Attr name = xmlUtility.createAttribute(dropDownproperty, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, dropDownDTO.getName());
+                                    Attr value = xmlUtility.createAttribute(dropDownproperty, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, dropDownDTO.getValue());
+                                    dropDownproperty.setAttributeNode(name);
+                                    dropDownproperty.setAttributeNode(value);
+                                    nodeElement.appendChild(dropDownproperty);
+                                }
                             }
 
                             if (attribute.getClass() == CheckBoxDTO.class) {
@@ -249,12 +333,15 @@ public class XMLGenerateService implements IXMLGenerateService {
 
                             if (attribute.getClass() == SwitchButtonDTO.class) {
                                 SwitchButtonDTO switchButtonDTO = (SwitchButtonDTO) attribute;
-                                Element checkBoxproperty = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
-                                Attr name = xmlUtility.createAttribute(checkBoxproperty, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, switchButtonDTO.getName());
-                                Attr value = xmlUtility.createAttribute(checkBoxproperty, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, switchButtonDTO.getValue());
-                                checkBoxproperty.setAttributeNode(name);
-                                checkBoxproperty.setAttributeNode(value);
-                                nodeElement.appendChild(checkBoxproperty);
+                                if (!switchButtonDTO.getName().equals("monitoring")) {
+                                    Element switchButtonProperty = xmlUtility.createElement(doc, xmlUtility.NODE_PROPERTY);
+                                    Attr name = xmlUtility.createAttribute(switchButtonProperty, doc, xmlUtility.NODE_PROPERTY_NAME_ATTR, switchButtonDTO.getName());
+                                    Attr value = xmlUtility.createAttribute(switchButtonProperty, doc, xmlUtility.NODE_PROPERTY_VALUE_ATTR, switchButtonDTO.getValue());
+                                    switchButtonProperty.setAttributeNode(name);
+                                    switchButtonProperty.setAttributeNode(value);
+                                    nodeElement.appendChild(switchButtonProperty);
+                                }
+
                             }
 
                             if (attribute.getClass() == GroovyEditorDTO.class) {

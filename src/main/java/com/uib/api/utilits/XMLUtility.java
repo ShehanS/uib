@@ -78,6 +78,10 @@ public class XMLUtility implements IXMLUtility {
 
     public static final String TARGET_TERMINAL = "targetTerminal";
 
+    public static final String CAPTURE_ELEMENT = "Capture";
+
+    public static final String MONITORING = "monitoring";
+
 
     public Element createElement(Document doc, String element) throws FieldHasNull {
         if (element != null) {

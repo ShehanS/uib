@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class TextFieldDTO {
     private String name;
     private String value;
+    private String additionalAttribute;
 }
