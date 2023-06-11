@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.uib.api.UibApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.625 s - in com.uib.api.UibApplicationTests
