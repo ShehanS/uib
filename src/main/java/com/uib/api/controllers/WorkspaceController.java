@@ -4,7 +4,10 @@ import com.uib.api.dtos.*;
 import com.uib.api.enums.ResponseCode;
 import com.uib.api.services.WorkspaceServices;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -69,6 +72,17 @@ public class WorkspaceController {
             responseMessageDTO = new ResponseMessageDTO(workspaceServices.updateFlow(flow), null, null, ResponseCode.FILE_CREATED_SUCCESS);
         } catch (Exception e) {
 
+        }
+        return ResponseEntity.ok().body(responseMessageDTO);
+    }
+
+    @PostMapping(path = "/delete")
+    public ResponseEntity<ResponseMessageDTO> deleteFile(@RequestBody DeleteItemDTO deleteItemDTO) {
+        ResponseMessageDTO responseMessageDTO = null;
+        try {
+            responseMessageDTO = new ResponseMessageDTO(workspaceServices.deleteFlow(deleteItemDTO), null, null, ResponseCode.FILE_DELETE_SUCCESS);
+        } catch (Exception e) {
+            responseMessageDTO = new ResponseMessageDTO(null, e.getMessage(), null, ResponseCode.FILE_DELETE_ERROR);
         }
         return ResponseEntity.ok().body(responseMessageDTO);
     }

@@ -20,10 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.apache.catalina.startup.ExpandWar.delete;
 
 
 @Service
@@ -167,6 +170,29 @@ public class WorkspaceServices implements IWorkspace {
             e.printStackTrace();
         }
         return restoreFlow;
+    }
+
+    @Override
+    public String deleteFlow(DeleteItemDTO deleteItemDTO) throws NotFoundException, FileNotFoundException {
+
+        if (deleteItemDTO.getType().equals("file")) {
+            File deleteFile = new File(deleteItemDTO.getFilePath());
+            if (deleteFile.delete()) {
+                return "FILE_DELETED";
+            } else {
+                throw new NotFoundException("File not deleted");
+            }
+        } else if (deleteItemDTO.getType().equals("folder")) {
+            File file = new File(deleteItemDTO.getPath());
+            if (file.isDirectory()) {
+                for (File c : file.listFiles())
+                    delete(c);
+            }
+            if (!file.delete())
+                throw new FileNotFoundException("Failed to delete file");
+        }
+
+        return null;
     }
 
     private static void buildFolderTree(File folder, List<FolderTreeDTO> folderTreeDTOList) {
