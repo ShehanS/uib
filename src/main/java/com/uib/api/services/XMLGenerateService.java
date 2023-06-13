@@ -21,7 +21,7 @@ import com.uib.api.inputComponents.EdgeComponent;
 import com.uib.api.interfaces.IInputType;
 import com.uib.api.interfaces.IXMLGenerateService;
 import com.uib.api.utilits.XMLUtility;
-import factory.InputFactory;
+import com.uib.api.factory.InputFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
