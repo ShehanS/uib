@@ -79,10 +79,12 @@ public class WorkspaceController {
     @PostMapping(path = "/delete")
     public ResponseEntity<ResponseMessageDTO> deleteFile(@RequestBody DeleteItemDTO deleteItemDTO) {
         ResponseMessageDTO responseMessageDTO = null;
+        DeleteItemDTO deleteStatus = null;
         try {
-            responseMessageDTO = new ResponseMessageDTO(workspaceServices.deleteFlow(deleteItemDTO), null, null, ResponseCode.FILE_DELETE_SUCCESS);
+            deleteStatus = workspaceServices.deleteFlow(deleteItemDTO);
+            responseMessageDTO = new ResponseMessageDTO(deleteStatus, null, null, ResponseCode.SUCCESS);
         } catch (Exception e) {
-            responseMessageDTO = new ResponseMessageDTO(null, e.getMessage(), null, ResponseCode.FILE_DELETE_ERROR);
+            responseMessageDTO = new ResponseMessageDTO(deleteStatus, e.getMessage(), null, ResponseCode.ERROR);
         }
         return ResponseEntity.ok().body(responseMessageDTO);
     }

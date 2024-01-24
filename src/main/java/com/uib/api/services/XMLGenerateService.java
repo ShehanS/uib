@@ -304,8 +304,17 @@ public class XMLGenerateService implements IXMLGenerateService {
                                 TableFillDTO tableFillDTO = (TableFillDTO) attribute;
                                 List<TableAttribute> tableAttributeList = tableFillDTO.getTableData().getAttributeList();
                                 if (tableAttributeList.size() > 0) {
+                                    Element headerElement = xmlUtility.createElement(doc, xmlUtility.HTTP_REQUEST_HEADER);
                                     for (TableAttribute tableAttribute : tableAttributeList) {
+                                        Element header = xmlUtility.createElement(doc, xmlUtility.HEADER);
+                                        Attr name = xmlUtility.createAttribute(header, doc, xmlUtility.HEADER_NAME_ATT, tableAttribute.getName());
+                                        Attr value = xmlUtility.createAttribute(header, doc, xmlUtility.HEADER_VALUE_ATT, tableAttribute.getValue());
+                                        header.setAttributeNode(name);
+                                        header.setAttributeNode(value);
+                                        headerElement.appendChild(header);
+
                                     }
+                                    nodeElement.appendChild(headerElement);
                                 }
                             }
 

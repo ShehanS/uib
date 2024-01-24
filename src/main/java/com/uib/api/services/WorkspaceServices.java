@@ -7,6 +7,7 @@ import com.uib.api.entities.User;
 import com.uib.api.entities.UserProject;
 import com.uib.api.entities.Workspace;
 import com.uib.api.enums.FolderType;
+import com.uib.api.enums.ResponseCode;
 import com.uib.api.exceptions.*;
 import com.uib.api.interfaces.IWorkspace;
 import com.uib.api.repositories.UserProjectRepository;
@@ -173,12 +174,16 @@ public class WorkspaceServices implements IWorkspace {
     }
 
     @Override
-    public String deleteFlow(DeleteItemDTO deleteItemDTO) throws NotFoundException, FileNotFoundException {
-
+    public DeleteItemDTO deleteFlow(DeleteItemDTO deleteItemDTO) throws NotFoundException, FileNotFoundException {
+        DeleteItemDTO deleteStatus = new DeleteItemDTO();
         if (deleteItemDTO.getType().equals("file")) {
             File deleteFile = new File(deleteItemDTO.getFilePath());
             if (deleteFile.delete()) {
-                return "FILE_DELETED";
+                deleteStatus.setFilePath(deleteItemDTO.getFilePath());
+                deleteStatus.setResponseCode(ResponseCode.FILE_DELETE_SUCCESS);
+                deleteStatus.setType(deleteItemDTO.getType());
+                deleteStatus.setType(deleteItemDTO.getType());
+                return deleteStatus;
             } else {
                 throw new NotFoundException("File not deleted");
             }
@@ -188,10 +193,18 @@ public class WorkspaceServices implements IWorkspace {
                 for (File c : file.listFiles())
                     delete(c);
             }
+            deleteStatus.setType(deleteItemDTO.getType());
+            deleteStatus.setPath(deleteItemDTO.getPath());
+            deleteStatus.setResponseCode(ResponseCode.PROJECT_DELETED_SUCCESS);
             if (!file.delete())
                 throw new FileNotFoundException("Failed to delete file");
         }
 
+        return deleteStatus;
+    }
+
+    @Override
+    public Flow saveFlow(Flow flow) {
         return null;
     }
 

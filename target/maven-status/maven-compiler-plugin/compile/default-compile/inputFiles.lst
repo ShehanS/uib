@@ -79,6 +79,7 @@
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/dtos/returnDTOs/Edge/EdgeDTO.java
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/dtos/WorkspaceDTO.java
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/interfaces/IXMLMapping.java
+/home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/services/TestImpl.java
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/dtos/returnDTOs/InputParserSetting/InputParserSettings.java
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/dtos/inputDTOs/MappingTable/MappingDTO.java
 /home/shehan/Documents/dev/ncinga/uib/src/main/java/com/uib/api/exceptions/FileCreateException.java

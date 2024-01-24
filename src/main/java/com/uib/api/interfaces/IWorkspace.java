@@ -19,9 +19,11 @@ public interface IWorkspace {
 
   Flow updateFlow(Flow flow) throws NotFoundException, ParserConfigurationException, TransformerException;
 
-  Flow openFlow(Flow flow) throws  NotFoundException;
+  Flow openFlow(Flow flow) throws NotFoundException;
 
-  String deleteFlow(DeleteItemDTO path) throws NotFoundException, FileNotFoundException;
+  DeleteItemDTO deleteFlow(DeleteItemDTO path) throws NotFoundException, FileNotFoundException;
+
+  Flow saveFlow(Flow flow);
 
 
 }

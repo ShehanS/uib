@@ -30,16 +30,10 @@ public class XMLUtility implements IXMLUtility {
     public final static String NODE_OUTPUT_PARSER_SETTINGS = "OutputParserSettings";
     public final static String NODE_INPUT_PARSER_NAME = "ParserName";
     public final static String NODE_OUTPUT_PARSER_NAME = "ParserName";
-    public final static String NODE_INPUT_PARSER_BASE = "ParserBase";
-    public final static String NODE_INPUT_PARSER_VALUE_XML = "XML";
-    public final static String NODE_OUTPUT_PARSER_VALUE_JSON = "JSON";
-    public final static String INPUT_PARSER_PROPERTY = "Property";
-    public final static String PARSER_PROPERTY_NAME_ATTR = "name";
-    public final static String PARSER_PROPERTY_VALUE_ATTR = "value";
+
     public final static String NODE_HANDLING_PROPERTIES = "HadlingProperties";
     public final static String NODE_HANDLING_PROPERTY = "HadlingProperty";
-    public final static String HANDLING_PROPERTY_NAME_ATTR = "name";
-    public final static String HANDLING_PROPERTY_VALUE_ATTR = "value";
+
     public final static String INPUT_TERMINAL = "InputTerminal";
     public final static String INPUT_TERMINAL_NAME_ATTR = "id";
     public final static String OUTPUT_TERMINAL = "OutputTerminal";
